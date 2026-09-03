@@ -35,7 +35,6 @@
             height: 100%;
         }
 
-        /* PAINEL DE CONTROLE (ESQUERDA) */
         .controls-panel {
             background-color: var(--bg-panel);
             border-right: 1px solid var(--border-color);
@@ -236,7 +235,6 @@
         .btn-action.primary { background: var(--gold-primary); color: #000; border: none; }
         .btn-action.primary:hover { background: var(--gold-light); }
 
-        /* PREVIEW & CODIGO (DIREITA) */
         .preview-panel {
             display: flex;
             flex-direction: column;
@@ -290,7 +288,6 @@
             overflow-y: auto;
         }
 
-        /* Modal Import */
         .modal {
             display: none;
             position: fixed;
@@ -313,7 +310,6 @@
 <body>
 
 <div class="app-container">
-    <!-- PAINEL LATERAL DE CONTROLE -->
     <div class="controls-panel">
         <div class="panel-header">
             <h1>Cientistas Jujutsu</h1>
@@ -333,7 +329,6 @@
             </div>
         </div>
 
-        <!-- 1. IDENTIFICAÇÃO -->
         <div class="form-section">
             <h2>1. Identificação</h2>
             <div class="form-group">
@@ -358,7 +353,6 @@
             </div>
         </div>
 
-        <!-- 2. BASE DO EXPERIMENTO -->
         <div class="form-section">
             <h2>2. Base do Experimento</h2>
             <div class="form-group">
@@ -372,14 +366,10 @@
             </div>
         </div>
 
-        <!-- 3. ATRIBUTOS NUMÉRICOS (STACKABLE) -->
         <div class="form-section">
             <h2>3. Atributos Numéricos</h2>
             <div class="attribute-row">
-                <div class="attribute-info">
-                    Potência de Dano
-                    <span>+100 Dano Base (+1 PC)</span>
-                </div>
+                <div class="attribute-info">Potência de Dano<span>+100 Dano Base (+1 PC)</span></div>
                 <div class="counter-controls">
                     <button class="btn-counter" onclick="adjustAttr('dano', -1)">-</button>
                     <span id="qty-dano">0</span>
@@ -387,10 +377,7 @@
                 </div>
             </div>
             <div class="attribute-row">
-                <div class="attribute-info">
-                    Resistência / Durabilidade
-                    <span>+100 Resistência (+1 PC)</span>
-                </div>
+                <div class="attribute-info">Resistência / Durabilidade<span>+100 Resistência (+1 PC)</span></div>
                 <div class="counter-controls">
                     <button class="btn-counter" onclick="adjustAttr('res', -1)">-</button>
                     <span id="qty-res">0</span>
@@ -398,10 +385,7 @@
                 </div>
             </div>
             <div class="attribute-row">
-                <div class="attribute-info">
-                    Alcance de Efeito
-                    <span>+2 metros de alcance (+1 PC)</span>
-                </div>
+                <div class="attribute-info">Alcance de Efeito<span>+2 metros de alcance (+1 PC)</span></div>
                 <div class="counter-controls">
                     <button class="btn-counter" onclick="adjustAttr('alcance', -1)">-</button>
                     <span id="qty-alcance">0</span>
@@ -410,31 +394,26 @@
             </div>
         </div>
 
-        <!-- 4. MÓDULOS DE EFEITO & APRIMORAMENTOS -->
         <div class="form-section">
             <h2>4. Efeitos & Aprimoramentos</h2>
             <div class="module-selector">
                 <select id="sel-effect">
-                    <!-- Restrição -->
                     <option value="mod_rest_1a">Lentidão (3 PC)</option>
                     <option value="mod_rest_1b">Derrubado (3 PC)</option>
                     <option value="mod_rest_2a">Imóvel (6 PC)</option>
                     <option value="mod_rest_2b">Levitação (6 PC)</option>
                     <option value="mod_rest_3">Atordoamento (10 PC)</option>
-                    <!-- Trauma -->
                     <option value="mod_trauma_1a">Fratura (4 PC)</option>
                     <option value="mod_trauma_1b">Sangramento (4 PC)</option>
                     <option value="mod_trauma_2a">Concussão (6 PC)</option>
                     <option value="mod_trauma_2b">Queimadura (6 PC)</option>
                     <option value="mod_trauma_3a">Necrose (12 PC)</option>
                     <option value="mod_trauma_3b">Sufocamento (12 PC)</option>
-                    <!-- Espiritual -->
                     <option value="mod_esp_1a">Marcação (4 PC)</option>
                     <option value="mod_esp_1b">Interferência (4 PC)</option>
                     <option value="mod_esp_2">Dreno Energético (8 PC)</option>
                     <option value="mod_esp_3a">Restrição CT (20 PC)</option>
                     <option value="mod_esp_3b">Dano na Alma (20 PC)</option>
-                    <!-- Mental -->
                     <option value="mod_ment_1a">Provocação (4 PC)</option>
                     <option value="mod_ment_1b">Silêncio (4 PC)</option>
                     <option value="mod_ment_2a">Cegueira (8 PC)</option>
@@ -442,7 +421,6 @@
                     <option value="mod_ment_3a">Alucinação (15 PC)</option>
                     <option value="mod_ment_3b">Sono (15 PC)</option>
                     <option value="mod_ment_3c">Encanto (15 PC)</option>
-                    <!-- Aprimoramentos (Stackable) -->
                     <option value="mod_ap_1">Estimulante Neuromuscular (+1 m/s) (6 PC)</option>
                     <option value="mod_ap_2">Ergogênico (+1 Força) (10 PC)</option>
                     <option value="mod_ap_3">Neuroestimulante (+1 Destreza) (10 PC)</option>
@@ -456,7 +434,6 @@
             <div class="added-list" id="added-effects-list"></div>
         </div>
 
-        <!-- 5. TOXICOLOGIA -->
         <div class="form-section">
             <h2>5. Módulo de Toxicologia</h2>
             <div class="module-selector">
@@ -473,20 +450,17 @@
             <div class="added-list" id="added-poisons-list"></div>
         </div>
 
-        <!-- AÇÕES -->
         <div class="action-buttons">
-            <button class="btn-action primary" onclick="copyHTML()">Copiar HTML</button>
-            <button class="btn-action" onclick="exportJSON()">Exportar JSON</button>
-            <button class="btn-action" onclick="openImportModal()">Importar JSON</button>
-            <button class="btn-action" onclick="resetForm()">Limpar Tudo</button>
+            <button class="btn-action primary" onclick="copyHTML()">Copiar HTML Fórum</button>
+            <button class="btn-action" onclick="openSaveModal()">Salvar / Carregar</button>
+            <button class="btn-action" onclick="resetForm()" style="grid-column: span 2;">Limpar Tudo</button>
         </div>
     </div>
 
-    <!-- PAINEL DIREITO: PREVIEW E CÓDIGO -->
     <div class="preview-panel">
         <div class="preview-tabs">
             <button class="tab-btn active" onclick="switchTab('preview')">Visualização Live</button>
-            <button class="tab-btn" onclick="switchTab('code')">Código Gerado</button>
+            <button class="tab-btn" onclick="switchTab('code')">Código HTML Gerado</button>
         </div>
         <div id="tab-preview" class="tab-content active">
             <div id="card-render-target"></div>
@@ -497,20 +471,19 @@
     </div>
 </div>
 
-<!-- MODAL IMPORT -->
-<div class="modal" id="import-modal">
+<div class="modal" id="save-modal">
     <div class="modal-content">
-        <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Importar JSON de Criação</h3>
-        <textarea id="import-json-input" placeholder="Cole o JSON exportado aqui..." style="height: 150px; margin-bottom: 10px;"></textarea>
+        <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Gerenciamento de Código de Estado</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">Copie este código para salvar sua ficha em um arquivo de texto, ou cole aqui para restaurá-la depois:</p>
+        <textarea id="save-code-input" placeholder="Cole ou copie o código de estado aqui..." style="height: 120px; margin-bottom: 10px; font-family: monospace; font-size: 0.75rem;"></textarea>
         <div style="display: flex; gap: 10px; justify-content: flex-end;">
-            <button class="btn-action" onclick="closeImportModal()">Cancelar</button>
-            <button class="btn-action primary" onclick="processImport()">Carregar</button>
+            <button class="btn-action" onclick="closeSaveModal()">Fechar</button>
+            <button class="btn-action primary" onclick="processLoadState()">Carregar Estado</button>
         </div>
     </div>
 </div>
 
 <script>
-    // BD DE EFEITOS E CUSTOS ATUALIZADO
     const EFFECTS_DB = {
         'mod_rest_1a': { name: 'Lentidão', pc: 3, desc: 'Reduz Vel em 50%.', stackable: false },
         'mod_rest_1b': { name: 'Derrubado', pc: 3, desc: 'Gasta 50% mov p/ levantar.', stackable: false },
@@ -535,8 +508,6 @@
         'mod_ment_3a': { name: 'Alucinação', pc: 15, desc: 'Ilusão / Altera percepção do alvo.', stackable: false },
         'mod_ment_3b': { name: 'Sono', pc: 15, desc: 'Alvo fica Inconsciente.', stackable: false },
         'mod_ment_3c': { name: 'Encanto', pc: 15, desc: 'Incapaz de atacar a fonte.', stackable: false },
-        
-        // Stackables (Aprimoramentos)
         'mod_ap_1': { name: 'Estimulante neuromuscular', pc: 6, desc: '+1 m/s na velocidade', stackable: true },
         'mod_ap_2': { name: 'Ergogênico', pc: 10, desc: 'Força considerada +1 ponto superior', stackable: true },
         'mod_ap_3': { name: 'Neuroestimulante', pc: 10, desc: 'Destreza considerada +1 ponto superior', stackable: true },
@@ -555,20 +526,11 @@
         'p_esp': { name: 'Veneno Grau Especial', pc: 50, hp: '3.500 HP', dur: 'Permanente', cura: 'RCT Avançado' }
     };
 
-    // ESTADO GLOBAL DA APLICAÇÃO
     let state = {
-        name: '',
-        subtitle: '',
-        banner: '',
-        kanji: '研',
-        desc: '',
-        base: 'quimica',
-        attrs: { dano: 0, res: 0, alcance: 0 },
-        effects: [], // { id, qty }
-        poisons: []  // { id, qty }
+        name: '', subtitle: '', banner: '', kanji: '研', desc: '', base: 'quimica',
+        attrs: { dano: 0, res: 0, alcance: 0 }, effects: [], poisons: []
     };
 
-    // INICIALIZAÇÃO
     window.onload = () => {
         loadLocalStorage();
         readInputsToState();
@@ -593,18 +555,10 @@
     function addSelectedEffect() {
         const sel = document.getElementById('sel-effect').value;
         const itemDb = EFFECTS_DB[sel];
-        
         if (!itemDb) return;
-
         const existing = state.effects.find(e => e.id === sel);
-
-        if (existing) {
-            if (itemDb.stackable) {
-                existing.qty++;
-            }
-        } else {
-            state.effects.push({ id: sel, qty: 1 });
-        }
+        if (existing) { if (itemDb.stackable) existing.qty++; } 
+        else { state.effects.push({ id: sel, qty: 1 }); }
         updateState();
     }
 
@@ -616,15 +570,9 @@
     function addPoison() {
         const sel = document.getElementById('sel-poison').value;
         const itemDb = POISONS_DB[sel];
-        
         if (!itemDb) return;
-        
         const existing = state.poisons.find(p => p.id === sel);
-        if (existing) {
-            existing.qty++;
-        } else {
-            state.poisons.push({ id: sel, qty: 1 });
-        }
+        if (existing) existing.qty++; else state.poisons.push({ id: sel, qty: 1 });
         updateState();
     }
 
@@ -633,114 +581,65 @@
         updateState();
     }
 
-    // CÁLCULOS LOGICOS
     function calculateTotals() {
-        if (state.base === 'fixo_marionete') {
-            return { pc: 0, yen: '10.000.000', posts: 15, isFixed: true };
-        }
-        if (state.base === 'fixo_objeto') {
-            return { pc: 0, yen: '100.000.000', posts: 15, isFixed: true };
-        }
+        if (state.base === 'fixo_marionete') return { pc: 0, yen: '10.000.000', posts: 15, isFixed: true };
+        if (state.base === 'fixo_objeto') return { pc: 0, yen: '100.000.000', posts: 15, isFixed: true };
 
         let pc = 0;
-        // Base PC
         if (state.base === 'quimica') pc += 2;
         if (state.base === 'estrutura') pc += 5;
         if (state.base === 'biologico') pc += 10;
 
-        // Atributos
         pc += (state.attrs.dano || 0) * 1;
         pc += (state.attrs.res || 0) * 1;
         pc += (state.attrs.alcance || 0) * 1;
 
-        // Efeitos (com trava de segurança caso o ID não exista mais no DB)
-        state.effects.forEach(e => {
-            const db = EFFECTS_DB[e.id];
-            if (db) {
-                pc += db.pc * e.qty;
-            }
-        });
+        state.effects.forEach(e => { if (EFFECTS_DB[e.id]) pc += EFFECTS_DB[e.id].pc * e.qty; });
+        state.poisons.forEach(p => { if (POISONS_DB[p.id]) pc += POISONS_DB[p.id].pc * p.qty; });
 
-        // Venenos (com trava de segurança)
-        state.poisons.forEach(p => {
-            const db = POISONS_DB[p.id];
-            if (db) {
-                pc += db.pc * p.qty;
-            }
-        });
-
-        const yenVal = pc * 250000;
-        const postsVal = Math.ceil(pc / 2);
-
-        return {
-            pc: pc,
-            yen: yenVal.toLocaleString('pt-BR'),
-            posts: postsVal,
-            isFixed: false
-        };
+        return { pc: pc, yen: (pc * 250000).toLocaleString('pt-BR'), posts: Math.ceil(pc / 2), isFixed: false };
     }
 
-    // ATUALIZAÇÃO REATIVA SUAVE
     function updateState() {
         readInputsToState();
         const totals = calculateTotals();
 
-        // Atualizar Displays
         document.getElementById('disp-pc').innerText = totals.isFixed ? 'N/A' : totals.pc;
         document.getElementById('disp-yen').innerText = '¥ ' + totals.yen;
         document.getElementById('disp-posts').innerText = totals.posts;
 
         renderAddedLists();
         
-        // Gerar HTML
         const htmlCode = generateHTMLCard(totals);
         document.getElementById('card-render-target').innerHTML = htmlCode;
         document.getElementById('code-output').value = htmlCode;
-
         saveLocalStorage();
     }
 
     function renderAddedLists() {
-        // Render Efeitos Adicionados
         const efContainer = document.getElementById('added-effects-list');
         efContainer.innerHTML = '';
         state.effects.forEach(e => {
             const db = EFFECTS_DB[e.id];
-            if (!db) return; // Trava de segurança para dados órfãos
-
+            if (!db) return;
             const div = document.createElement('div');
             div.className = 'added-item';
-            div.innerHTML = `
-                <div>
-                    <div class="item-title">${db.name} ${e.qty > 1 ? `(x${e.qty})` : ''}</div>
-                    <div class="item-cost">${db.pc * e.qty} PC • ${db.desc}</div>
-                </div>
-                <button class="btn-remove" onclick="removeEffect('${e.id}')">&times;</button>
-            `;
+            div.innerHTML = `<div><div class="item-title">${db.name} ${e.qty > 1 ? `(x${e.qty})` : ''}</div><div class="item-cost">${db.pc * e.qty} PC • ${db.desc}</div></div><button class="btn-remove" onclick="removeEffect('${e.id}')">&times;</button>`;
             efContainer.appendChild(div);
         });
 
-        // Render Venenos
         const poiContainer = document.getElementById('added-poisons-list');
         poiContainer.innerHTML = '';
         state.poisons.forEach(p => {
             const db = POISONS_DB[p.id];
-            if (!db) return; // Trava de segurança para dados órfãos
-
+            if (!db) return;
             const div = document.createElement('div');
             div.className = 'added-item';
-            div.innerHTML = `
-                <div>
-                    <div class="item-title">${db.name} ${p.qty > 1 ? `(x${p.qty})` : ''}</div>
-                    <div class="item-cost">${db.pc * p.qty} PC • ${db.hp} (${db.dur})</div>
-                </div>
-                <button class="btn-remove" onclick="removePoison('${p.id}')">&times;</button>
-            `;
+            div.innerHTML = `<div><div class="item-title">${db.name} ${p.qty > 1 ? `(x${p.qty})` : ''}</div><div class="item-cost">${db.pc * p.qty} PC • ${db.hp} (${db.dur})</div></div><button class="btn-remove" onclick="removePoison('${p.id}')">&times;</button>`;
             poiContainer.appendChild(div);
         });
     }
 
-    // CONSTRUTOR DO TEMPLATE HTML FINAL
     function generateHTMLCard(totals) {
         let baseName = '';
         if (state.base === 'quimica') baseName = 'Substância Química (Consumível)';
@@ -750,87 +649,77 @@
         if (state.base === 'fixo_objeto') baseName = 'Criação Especial: Objeto Amaldiçoado';
 
         let statsRows = '';
-        if (state.attrs.dano > 0) {
-            statsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 8px; font-weight: bold;">Potência de Dano</td><td style="padding: 8px;">+${state.attrs.dano * 100} Dano Base</td><td style="padding: 8px;">${state.attrs.dano} PC</td></tr>`;
-        }
-        if (state.attrs.res > 0) {
-            statsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 8px; font-weight: bold;">Resistência / Durabilidade</td><td style="padding: 8px;">+${state.attrs.res * 100} Resistência</td><td style="padding: 8px;">${state.attrs.res} PC</td></tr>`;
-        }
-        if (state.attrs.alcance > 0) {
-            statsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 8px; font-weight: bold;">Alcance de Efeito</td><td style="padding: 8px;">${state.attrs.alcance * 2} metros</td><td style="padding: 8px;">${state.attrs.alcance} PC</td></tr>`;
-        }
-
+        if (state.attrs.dano > 0) statsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 10px; font-weight: bold; color: var(--highlight);">Potência de Dano</td><td style="padding: 10px; color: var(--muted);">+${state.attrs.dano * 100} Dano Base</td><td style="padding: 10px; color: var(--muted);">${state.attrs.dano} PC</td></tr>`;
+        if (state.attrs.res > 0) statsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 10px; font-weight: bold; color: var(--highlight);">Resistência / Durabilidade</td><td style="padding: 10px; color: var(--muted);">+${state.attrs.res * 100} Resistência</td><td style="padding: 10px; color: var(--muted);">${state.attrs.res} PC</td></tr>`;
+        if (state.attrs.alcance > 0) statsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 10px; font-weight: bold; color: var(--highlight);">Alcance de Efeito</td><td style="padding: 10px; color: var(--muted);">${state.attrs.alcance * 2} metros</td><td style="padding: 10px; color: var(--muted);">${state.attrs.alcance} PC</td></tr>`;
+        
         let effectsRows = '';
         state.effects.forEach(e => {
             const db = EFFECTS_DB[e.id];
-            if (!db) return; // Trava de segurança para dados órfãos
-            effectsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 8px; font-weight: bold; color: var(--gold-main);">${db.name} ${e.qty > 1 ? `(x${e.qty})` : ''}</td><td style="padding: 8px;">${db.desc}</td><td style="padding: 8px;">${db.pc * e.qty} PC</td></tr>`;
+            if (db) effectsRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 10px; font-weight: bold; color: var(--accent1);">${db.name} ${e.qty > 1 ? `(x${e.qty})` : ''}</td><td style="padding: 10px; color: var(--muted);">${db.desc}</td><td style="padding: 10px; color: var(--muted);">${db.pc * e.qty} PC</td></tr>`;
         });
-
+        
         let poisonRows = '';
         state.poisons.forEach(p => {
             const db = POISONS_DB[p.id];
-            if (!db) return; // Trava de segurança para dados órfãos
-            poisonRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 8px; font-weight: bold; color: #f44336;">${db.name} ${p.qty > 1 ? `(x${p.qty})` : ''}</td><td style="padding: 8px;">${db.hp} (${db.dur}) | Cura: ${db.cura}</td><td style="padding: 8px;">${db.pc * p.qty} PC</td></tr>`;
+            if (db) poisonRows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 10px; font-weight: bold; color: #ff4757;">${db.name} ${p.qty > 1 ? `(x${p.qty})` : ''}</td><td style="padding: 10px; color: var(--muted);">${db.hp} (${db.dur}) | Cura: ${db.cura}</td><td style="padding: 10px; color: var(--muted);">${db.pc * p.qty} PC</td></tr>`;
         });
 
-        return `<div class="rpg-card">
-  <div class="banner-container">
-    <div class="lore-banner banner-static" style="background-image: url('${state.banner}');"></div>
-  </div>
-  <div class="main-content">
-    <div class="header">
-      <div class="icon-deco" data-kanji="${state.kanji}"></div>
-      <div>
-        <div class="title"><span class="g">${escapeHTML(state.name)}</span><span class="tag">Projeto Jujutsu</span></div>
-        <div class="subtitle-line">${escapeHTML(state.subtitle)}</div>
-      </div>
+        // ADICIONADO: Tag <link> injetando o CSS no topo do código gerado!
+        const rawHtml = `
+<link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/profissoes.css?v=4" rel="stylesheet" type="text/css">
+<div class="rpg-card">
+    <div class="banner-container">
+        <div class="lore-banner banner-static" style="background-image: url('${state.banner}');"></div>
     </div>
-    <div class="section" style="margin-top: 20px;">
-      <div class="h"><div class="name">Ficha Técnica do Experimento</div></div>
-      <p class="lead">${escapeHTML(state.desc)}</p>
+    <div class="main-content">
+        <div class="header">
+            <div class="icon-deco" data-kanji="${state.kanji}"></div>
+            <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
+                <div class="title">${escapeHTML(state.name)}<span class="tag">Projeto Jujutsu</span></div>
+                <div class="subtitle-line">${escapeHTML(state.subtitle)}</div>
+            </div>
+        </div>
+        <div class="section" style="margin-top: 20px;">
+            <div class="h"><div class="name">Ficha Técnica do Experimento</div></div>
+            <p class="lead">${escapeHTML(state.desc)}</p>
+        </div>
+        <div class="section">
+            <div class="h"><div class="name">Custos & Parâmetros de Produção</div></div>
+            <div class="details-grid">
+                <div class="detail-card"><div class="card-title">Custo Total (¥)</div><div class="card-content">¥ ${totals.yen}</div></div>
+                <div class="detail-card"><div class="card-title">Posts de Trabalho</div><div class="card-content">${totals.posts} Posts em Laboratório</div></div>
+                <div class="detail-card" style="grid-column: 1 / -1;"><div class="card-title">Base Estrutural</div><div class="card-content">${baseName}</div></div>
+            </div>
+        </div>
+        ${(statsRows || effectsRows || poisonRows) ? `
+        <div class="section">
+            <div class="h"><div class="name">Especificações & Módulos</div></div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: var(--glass-2); border-radius: 6px; overflow: hidden;">
+                <thead style="background: var(--glass);">
+                    <tr style="text-align: left;">
+                        <th style="padding: 10px; color: var(--text);">Componente / Efeito</th>
+                        <th style="padding: 10px; color: var(--text);">Mecânica & Detalhes</th>
+                        <th style="padding: 10px; color: var(--text);">Custo</th>
+                    </tr>
+                </thead>
+                <tbody>${statsRows}${effectsRows}${poisonRows}</tbody>
+            </table>
+        </div>` : ''}
     </div>
-    <div class="section">
-      <div class="h"><div class="name">Custos & Parâmetros de Produção</div></div>
-      <div class="details-grid">
-        <div class="detail-card"><div class="card-title">Custo Total (¥)</div><div class="card-content">¥ ${totals.yen}</div></div>
-        <div class="detail-card"><div class="card-title">Posts de Trabalho</div><div class="card-content">${totals.posts} Posts em Laboratório</div></div>
-        <div class="detail-card" style="grid-column: 1 / -1;"><div class="card-title">Base Estrutural</div><div class="card-content">${baseName}</div></div>
-      </div>
-    </div>
-    ${(statsRows || effectsRows || poisonRows) ? `
-    <div class="section">
-      <div class="h"><div class="name">Especificações & Módulos</div></div>
-      <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: rgba(0,0,0,0.2);">
-        <thead>
-          <tr style="border-bottom: 2px solid var(--combat-border, #444); text-align: left;">
-            <th style="padding: 8px;">Componente / Efeito</th>
-            <th style="padding: 8px;">Mecânica & Detalhes</th>
-            <th style="padding: 8px;">Custo</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${statsRows}
-          ${effectsRows}
-          ${poisonRows}
-        </tbody>
-      </table>
-    </div>` : ''}
-  </div>
 </div>`;
+
+        // RegEx mantido para comprimir tudo na mesma linha respeitando o layout de fórum
+        return rawHtml.replace(/\r?\n|\r/g, '').replace(/>\s+</g, '><').trim();
     }
 
     function escapeHTML(str) {
-        return str.replace(/[&<>'"]/g, 
-            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-        );
+        return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
 
-    // NAVEGAÇÃO E UTILITÁRIOS
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
         if (tab === 'preview') {
             document.querySelectorAll('.tab-btn')[0].classList.add('active');
             document.getElementById('tab-preview').classList.add('active');
@@ -843,35 +732,26 @@
     function copyHTML() {
         const code = document.getElementById('code-output').value;
         navigator.clipboard.writeText(code).then(() => {
-            alert('Código HTML copiado para a área de transferência!');
+            alert('Código HTML limpo copiado para a área de transferência!');
         });
     }
 
-    function exportJSON() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `${state.name.toLowerCase().replace(/\s+/g, '_')}_criacao.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
+    function openSaveModal() {
+        const encoded = btoa(encodeURIComponent(JSON.stringify(state)));
+        document.getElementById('save-code-input').value = encoded;
+        document.getElementById('save-modal').style.display = 'flex';
     }
 
-    function openImportModal() {
-        document.getElementById('import-modal').style.display = 'flex';
+    function closeSaveModal() {
+        document.getElementById('save-modal').style.display = 'none';
     }
 
-    function closeImportModal() {
-        document.getElementById('import-modal').style.display = 'none';
-    }
-
-    function processImport() {
+    function processLoadState() {
         try {
-            const raw = document.getElementById('import-json-input').value;
-            const parsed = JSON.parse(raw);
-            state = parsed;
-            
-            // Reencher inputs
+            const raw = document.getElementById('save-code-input').value.trim();
+            const decoded = JSON.parse(decodeURIComponent(atob(raw)));
+            state = decoded;
+
             document.getElementById('inp-name').value = state.name || '';
             document.getElementById('inp-subtitle').value = state.subtitle || '';
             document.getElementById('inp-banner').value = state.banner || '';
@@ -883,24 +763,20 @@
             document.getElementById('qty-alcance').innerText = state.attrs?.alcance || 0;
 
             updateState();
-            closeImportModal();
+            closeSaveModal();
+            alert('Ficha carregada com sucesso!');
         } catch (e) {
-            alert('Erro ao importar JSON. Verifique a formatação do código.');
+            alert('Código de estado inválido.');
+            console.error(e);
         }
     }
 
     function resetForm() {
         if (confirm('Deseja realmente reiniciar todo o formulário?')) {
             state = {
-                name: 'Novo Experimento',
-                subtitle: 'Conceito Inicial',
-                banner: 'https://i.pinimg.com/736x/18/01/58/180158b32c40ee753480685b85ad6561.jpg',
-                kanji: '研',
-                desc: 'Descrição da criação...',
-                base: 'quimica',
-                attrs: { dano: 0, res: 0, alcance: 0 },
-                effects: [],
-                poisons: []
+                name: 'Novo Experimento', subtitle: 'Conceito Inicial', banner: 'https://i.pinimg.com/736x/18/01/58/180158b32c40ee753480685b85ad6561.jpg',
+                kanji: '研', desc: 'Descrição da criação...', base: 'quimica',
+                attrs: { dano: 0, res: 0, alcance: 0 }, effects: [], poisons: []
             };
             
             document.getElementById('inp-name').value = state.name;
@@ -913,15 +789,12 @@
             document.getElementById('qty-res').innerText = 0;
             document.getElementById('qty-alcance').innerText = 0;
 
-            // Limpa o cache antigo também para evitar conflitos
             localStorage.removeItem('jujutsu_creator_state');
-
             updateState();
         }
     }
 
     function saveLocalStorage() {
-        // Remove atributos órfãos antes de salvar
         state.effects = state.effects.filter(e => EFFECTS_DB[e.id] !== undefined);
         state.poisons = state.poisons.filter(p => POISONS_DB[p.id] !== undefined);
         localStorage.setItem('jujutsu_creator_state', JSON.stringify(state));
