@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jujutsu RPG Builder - Ultimate</title>
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #121212;
+            --bg-input: #1e1e1e;
+            --gold-main: #d4af37;
+            --gold-hover: #f1c940;
+            --gold-dim: rgba(212, 175, 55, 0.2);
+            --text-light: #e0e0e0;
+            --text-muted: #888;
+            --border-color: #333;
+            --danger: #ff4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
+        body { background-color: var(--bg-dark); color: var(--text-light); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Scrollbars Customizadas */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-main); }
+
+        /* Layout Principal */
+        .sidebar { width: 45%; padding: 25px; background-color: var(--bg-panel); overflow-y: auto; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 20px; }
+        .right-panel { width: 55%; display: flex; flex-direction: column; background-color: var(--bg-dark); }
+        
+        h1, h2, h3 { color: var(--gold-main); font-weight: 600; letter-spacing: 0.5px; }
+        h1 { font-size: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 5px;}
+        h3 { font-size: 1.1rem; margin-top: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 5px;}
+
+        /* Formulários e Inputs */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: 1 / -1; }
+        
+        label { display: block; margin-bottom: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uPCercase; letter-spacing: 0.5px; }
+        input, textarea { width: 100%; background: var(--bg-input); color: #fff; border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; outline: none; transition: all 0.2s; font-size: 0.95rem; }
+        input:focus, textarea:focus { border-color: var(--gold-main); box-shadow: 0 0 0 2px var(--gold-dim); }
+        textarea { resize: vertical; min-height: 80px; line-height: 1.4; }
+
+        /* Barra de Ferramentas (Quick Codes) */
+        .toolbar { display: flex; gap: 5px; background: var(--bg-dark); padding: 5px; border: 1px solid var(--border-color); border-bottom: none; border-radius: 6px 6px 0 0; }
+        .toolbar button { background: var(--bg-input); border: 1px solid var(--border-color); color: var(--gold-main); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+        .toolbar button:hover { background: var(--gold-dim); }
+        .toolbar + textarea { border-top-left-radius: 0; border-top-right-radius: 0; }
+
+        /* Botões */
+        .btn { background: transparent; color: var(--gold-main); border: 1px solid var(--gold-main); padding: 12px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; text-transform: uPCercase; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn:hover { background: var(--gold-main); color: var(--bg-dark); }
+        .btn-danger { color: var(--danger); border-color: var(--danger); padding: 8px; }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+        .btn-import { background: #2a2a2a; border-color: #444; color: #fff; width: 100%; }
+        .btn-import:hover { background: #444; border-color: var(--gold-main); }
+        
+        /* Drag & Drop Tables */
+        .table-manager { display: flex; flex-direction: column; gap: 10px; }
+        .row-entry { display: flex; gap: 12px; align-items: flex-start; background: var(--bg-input); padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; cursor: grab; transition: border 0.2s; }
+        .row-entry:active { cursor: grabbing; }
+        .row-entry.drag-over { border: 2px dashed var(--gold-main); opacity: 0.7; }
+        .drag-handle { color: var(--text-muted); cursor: grab; display: flex; align-items: center; justify-content: center; padding-top: 10px; font-size: 1.2rem; }
+        .row-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; }
+        .row-inputs textarea { grid-column: 1 / -1; min-height: 50px; }
+
+        /* Painel Direito */
+        .preview-wraPCer { flex: 6; display: flex; flex-direction: column; background: #000; position: relative; }
+        .header-bar { padding: 10px 20px; background: var(--bg-panel); border-bottom: 1px solid var(--border-color); color: var(--gold-main); font-weight: bold; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
+        .status-indicator { font-size: 0.8rem; color: #4caf50; display: flex; align-items: center; gap: 5px; opacity: 0; transition: opacity 0.3s; }
+        .status-indicator.show { opacity: 1; }
+        iframe { width: 100%; height: 100%; border: none; background: transparent; }
+
+        .export-wraPCer { flex: 2; display: flex; flex-direction: column; background: var(--bg-panel); border-top: 1px solid var(--border-color); }
+        .export-box { flex: 1; margin: 0 20px 20px 20px; font-family: 'Consolas', monospace; color: #a3d9a5; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; resize: none; font-size: 0.85rem; }
+        .export-actions { padding: 15px 20px; display: flex; gap: 15px; }
+        .export-actions button { flex: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="editor-form">
+        <h1>
+            <span>⚙️ Configuração</span>
+            <button class="btn btn-danger" onclick="clearAllData()" style="padding: 6px 12px; font-size: 0.75rem;">Limpar Tudo</button>
+        </h1>
+
+        <div>
+            <label>📥 Importar de código existente</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="import-box" placeholder="Cole o HTML em linha única aqui..." style="flex: 1;">
+                <button class="btn btn-import" onclick="importCode()" style="width: auto;">Importar</button>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="full-width">
+                <label>URL do Banner</label>
+                <input type="text" id="bgImg" class="sync-input">
+            </div>
+            <div>
+                <label>Título principal</label>
+                <input type="text" id="titulo" class="sync-input">
+            </div>
+            <div>
+                <label>Kanji (Ícone)</label>
+                <input type="text" id="kanji" class="sync-input">
+            </div>
+            <div>
+                <label>Subtítulo</label>
+                <input type="text" id="subtitulo" class="sync-input">
+            </div>
+            <div>
+                <label>Tags (ex: Lore • Profissão)</label>
+                <input type="text" id="tags" class="sync-input">
+            </div>
+            
+            <div class="full-width">
+                <label>Definição & Engenharia Amaldiçoada</label>
+                <div class="toolbar">
+                    <button type="button" onclick="insertTag('definicao', '<b>', '</b>')">B</button>
+                    <button type="button" onclick="insertTag('definicao', '<i>', '</i>')">I</button>
+                    <button type="button" onclick="insertTag('definicao', '<u>', '</u>')">U</button>
+                    <button type="button" onclick="insertTag('definicao', '<br>', '')">BR</button>
+                </div>
+                <textarea id="definicao" class="sync-input"></textarea>
+            </div>
+        </div>
+
+        <h3>Detalhes Operacionais</h3>
+        <div class="form-grid">
+            <div class="full-width">
+                <label>Requisitos</label>
+                <textarea id="requisitos" class="sync-input"></textarea>
+            </div>
+            <div>
+                <label>Financiamento</label>
+                <textarea id="financiamento" class="sync-input"></textarea>
+            </div>
+            <div>
+                <label>Estatuto Legal</label>
+                <textarea id="estatuto" class="sync-input"></textarea>
+            </div>
+        </div>
+
+        <h3>Etapa 1: Base e Atributos Numéricos</h3>
+        <div class="table-manager" id="t1-container"></div>
+        <button class="btn full-width" onclick="addRowT1()">➕ Novo Atributo/Base</button>
+
+        <h3>Etapa 2: Módulos de Efeito (Comprados com PC)</h3>
+        <div class="table-manager" id="t2-container"></div>
+        <button class="btn full-width" onclick="addRowT2()">➕ Novo Módulo de Efeito</button>
+
+        <h3>Etapa 3: Módulo de Toxicologia</h3>
+        <div class="table-manager" id="t3-container"></div>
+        <button class="btn full-width" onclick="addRowT3()">➕ Novo Veneno/Grau</button>
+
+        <h3>Etapa 4: Criações Fixas de Nível Especial</h3>
+        <div class="table-manager" id="t4-container"></div>
+        <button class="btn full-width" onclick="addRowT4()">➕ Nova Criação Especial</button>
+    </div>
+
+    <div class="right-panel">
+        <div class="preview-wraPCer">
+            <div class="header-bar">
+                <span>👁️ Live Preview</span>
+                <span class="status-indicator" id="save-status">✓ Salvo localmente</span>
+            </div>
+            <iframe id="preview-frame"></iframe>
+        </div>
+
+        <div class="export-wraPCer">
+            <div class="header-bar" style="border-top: none; border-bottom: 1px solid var(--border-color);">
+                <span>💻 Código de Exportação (Linha Única)</span>
+            </div>
+            <div class="export-actions">
+                <button class="btn" onclick="copyCode()">📋 Copiar Código para o Fórum</button>
+            </div>
+            <textarea class="export-box" id="output-box" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA DEFAULT (SISTEMA DE PONTOS DE PESQUISA) ---
+        const defaultData = {
+            bgImg: 'https://i.pinimg.com/736x/18/01/58/180158b32c40ee753480685b85ad6561.jpg',
+            titulo: 'Cientistas Jujutsu',
+            kanji: '研',
+            subtitulo: 'Os Arquitetos do Proibido',
+            tags: 'Lore • Profissão',
+            definicao: 'Os Cientistas Jujutsu aplicam o método científico ao estudo da Energia Amaldiçoada. Todas as criações são regidas por <b>Pontos de Pesquisa (PC)</b>.<br><br>O jogador "compra" a Base, os Atributos e os Efeitos para montar seu experimento. O custo final do projeto é calculado da seguinte forma:<br>• <b>1 PC = ¥ 250.000</b> (Custo de Materiais).<br>• <b>Cada 2 PCs = 1 Post de Trabalho</b> no laboratório.',
+            requisitos: '• Inteligência: 15;<br>• Possuir RCT;',
+            financiamento: 'Autofinanciados, corporações ou mercado negro.',
+            estatuto: 'A maioria opera independentemente em laboratórios secretos sem sanção das autoridades.',
+            t1: [
+                { comp: 'Base: Substância Química', PC: '2 PC', desc: 'Fluidos, gases, soros ou pílulas (Consumíveis).' },
+                { comp: 'Base: Estrutura / Arma', PC: '5 PC', desc: 'Objetos inanimados, próteses metálicas, ferramentas.' },
+                { comp: 'Base: Organismo Biológico', PC: '10 PC', desc: 'Enxertos de carne, quimeras, órgãos modificados.' },
+                { comp: 'Potência de Dano', PC: '1 PC', desc: 'Garante 10 pontos de Dano Base ao experimento.' },
+                { comp: 'Resistência / Durabilidade', PC: '1 PC', desc: 'Garante 10 pontos de Resistência ao experimento.' },
+                { comp: 'Alcance de Efeito', PC: '1 PC', desc: 'Garante 2 metros de alcance (espalhamento de gás, área, etc).' }
+            ],
+            t2: [
+                { cat: 'I. Restrição de Movimento', efeito: 'Lentidão / Derrubado', PC: '3 PC', desc: 'Reduz Velocidade em 50% OU Gasta 50% do movimento para levantar. Cura: Fim da Duração / Levantar.' },
+                { cat: 'I. Restrição de Movimento', efeito: 'Imóvel / Levitação', PC: '6 PC', desc: 'Velocidade 0m/s. Sem esquiva. Levitação bloqueia inércia. Cura: Força Bruta / Ponto de apoio.' },
+                { cat: 'I. Restrição de Movimento', efeito: 'Atordoamento', PC: '10 PC', desc: 'Perde ações do turno. Torna-se Vulnerável. Cura: Segundos/Variável.' },
+                { cat: 'II. Trauma Físico', efeito: 'Fratura / Sangramento', PC: '4 PC', desc: 'Fratura inutiliza membro. Sangramento drena 5% a 25% de HP. Cura: RCT / Medicina.' },
+                { cat: 'II. Trauma Físico', efeito: 'Concussão / Queimadura', PC: '6 PC', desc: 'CR reduzido a 1/3 OU Impede concentração (Sem feitiços complexos). Cura: Descanso / RCT.' },
+                { cat: 'II. Trauma Físico', efeito: 'Necrose / Sufocamento', PC: '12 PC', desc: 'Reduz HP Máximo OU -20% HP/turno até Inconsciência. Cura: Cirurgia / RCT 30+ / Respirar.' },
+                { cat: 'III. Anomalias Espirituais', efeito: 'Marcação / Interferência', PC: '4 PC', desc: 'Ignora camuflagem do alvo OU Cega "Percepção Mágica".' },
+                { cat: 'III. Anomalias Espirituais', efeito: 'Dreno Energético', PC: '8 PC', desc: 'Perde EA fixa/porcentagem por turno, sem recuperação natural.' },
+                { cat: 'III. Anomalias Espirituais', efeito: 'Restrição CT / Dano na Alma', PC: '20 PC', desc: 'Desliga Inata forçadamente OU Dano irreversível por RCT comum. Exige percepção da alma.' },
+                { cat: 'IV. Colapso Mental', efeito: 'Provocação / Silêncio', PC: '4 PC', desc: 'Obriga foco no alvo OU Impede fala (sem encantamentos).' },
+                { cat: 'IV. Colapso Mental', efeito: 'Cegueira / Medo', PC: '8 PC', desc: 'CR Visual = 0 OU Impede aproximação; gera perda de Sanidade contínua.' },
+                { cat: 'IV. Colapso Mental', efeito: 'Alucinação / Sono / Encanto', PC: '15 PC', desc: 'Age baseado em ilusão OU Inconsciente, vulnerável a acerto Crítico OU Incapaz de atacar a fonte.' }
+            ],
+            t3: [
+                { grau: 'Grau 4', PC: '5 PC', hp: '200 HP', dur: '2 Turnos', efeito: 'Irritação leve, visão turva. (Imune no Nv. 10)', rct: '400 EA' },
+                { grau: 'Grau 3', PC: '10 PC', hp: '600 HP', dur: '3 Turnos', efeito: 'Dano moderado, lentidão. (Imune no Nv. 20)', rct: '600 EA' },
+                { grau: 'Grau 2', PC: '20 PC', hp: '1.200 HP', dur: '4 Turnos', efeito: 'Paralisia, necrose. (Imune no Nv. 30)', rct: '1.000 EA' },
+                { grau: 'Grau 1', PC: '35 PC', hp: '2.000 HP', dur: '5 Turnos', efeito: 'Falência de órgãos, bloqueio EA. (Imune no Nv. 40)', rct: '2.000 EA' },
+                { grau: 'Semi-Esp.', PC: '50 PC', hp: '3.000 HP', dur: '6 Turnos', efeito: 'Colapso nervoso. (Imune no Nv. 50)', rct: '5.000 EA' },
+                { grau: 'Especial', PC: '80 PC', hp: '3.500 HP', dur: 'Permanente', efeito: 'Conceitual (apodrece a alma). Não há imunidade total.', rct: 'RCT Avançado' }
+            ],
+            t4: [
+                { obra: 'Marionete Humana', req: 'INT 20, CT Manipulação de Marionetes, Maestria: Invocador, Quest Frankenstein.', custo: '¥ 10.000.000<br>15 Posts', desc: 'Transforma cadáver em marionete permanente retendo a CT original. <b>Risco:</b> Destruição do corpo base.' },
+                { obra: 'Objeto Amaldiçoado', req: 'INT 20, Inteligência Aguçada, Prodígio (Inteligência), Pactos 80.', custo: '¥ 100.000.000<br>15 Posts', desc: 'Criação contendo a alma de um feiticeiro ou maldição. <b>Risco:</b> Destruição do objeto e da alma.' }
+            ]
+        };
+
+        // --- 1. SETUP DO IFRAME ---
+        const iframe = document.getElementById('preview-frame');
+        function initIframe() {
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/profissoes.css?v=4" rel="stylesheet" type="text/css">
+                    <style>
+                        body { padding: 20px; background: transparent; margin: 0; }
+                        ::-webkit-scrollbar { width: 6px; }
+                        ::-webkit-scrollbar-track { background: transparent; }
+                        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 3px; }
+                    </style>
+                </head>
+                <body>
+                    <div id="render-target"></div>
+                </body>
+                </html>
+            `);
+            doc.close();
+        }
+
+        // --- 2. SISTEMA DE GESTÃO DE ESTADO E AUTO-SAVE ---
+        let renderTimeout;
+        const formContainer = document.getElementById('editor-form');
+
+        formContainer.addEventListener('input', (e) => {
+            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                triggerUpdate();
+            }
+        });
+
+        function triggerUpdate() {
+            clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(() => {
+                const data = gatherData();
+                saveToLocalStorage(data);
+                renderHTML(data);
+                showSaveStatus();
+            }, 300);
+        }
+
+        function gatherData() {
+            const data = {
+                bgImg: document.getElementById('bgImg').value,
+                titulo: document.getElementById('titulo').value,
+                kanji: document.getElementById('kanji').value,
+                subtitulo: document.getElementById('subtitulo').value,
+                tags: document.getElementById('tags').value,
+                definicao: document.getElementById('definicao').value,
+                requisitos: document.getElementById('requisitos').value,
+                financiamento: document.getElementById('financiamento').value,
+                estatuto: document.getElementById('estatuto').value,
+                t1: [], t2: [], t3: [], t4: []
+            };
+
+            document.querySelectorAll('#t1-container .row-entry').forEach(row => {
+                data.t1.push({
+                    comp: row.querySelector('.t1-comp').value,
+                    PC: row.querySelector('.t1-PC').value,
+                    desc: row.querySelector('.t1-desc').value
+                });
+            });
+
+            document.querySelectorAll('#t2-container .row-entry').forEach(row => {
+                data.t2.push({
+                    cat: row.querySelector('.t2-cat').value,
+                    efeito: row.querySelector('.t2-efeito').value,
+                    PC: row.querySelector('.t2-PC').value,
+                    desc: row.querySelector('.t2-desc').value
+                });
+            });
+
+            document.querySelectorAll('#t3-container .row-entry').forEach(row => {
+                data.t3.push({
+                    grau: row.querySelector('.t3-grau').value,
+                    PC: row.querySelector('.t3-PC').value,
+                    hp: row.querySelector('.t3-hp').value,
+                    dur: row.querySelector('.t3-dur').value,
+                    efeito: row.querySelector('.t3-efeito').value,
+                    rct: row.querySelector('.t3-rct').value
+                });
+            });
+
+            document.querySelectorAll('#t4-container .row-entry').forEach(row => {
+                data.t4.push({
+                    obra: row.querySelector('.t4-obra').value,
+                    req: row.querySelector('.t4-req').value,
+                    custo: row.querySelector('.t4-custo').value,
+                    desc: row.querySelector('.t4-desc').value
+                });
+            });
+
+            return data;
+        }
+
+        // --- 3. DRAG & DROP E DINÂMICA DE TABELAS ---
+        let draggedRow = null;
+
+        function addDragEvents(item) {
+            item.setAttribute('draggable', true);
+            item.addEventListener('dragstart', function() {
+                draggedRow = this;
+                setTimeout(() => this.style.opacity = '0.5', 0);
+            });
+            item.addEventListener('dragend', function() {
+                this.style.opacity = '1';
+                draggedRow = null;
+                document.querySelectorAll('.row-entry').forEach(el => el.classList.remove('drag-over'));
+                triggerUpdate();
+            });
+            item.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+            item.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+            item.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                if (draggedRow !== this && draggedRow.parentNode === this.parentNode) {
+                    const bounding = this.getBoundingClientRect();
+                    const offset = bounding.y + (bounding.height / 2);
+                    if (e.clientY - offset > 0) {
+                        this.parentNode.insertBefore(draggedRow, this.nextSibling);
+                    } else {
+                        this.parentNode.insertBefore(draggedRow, this);
+                    }
+                }
+            });
+        }
+
+        function createRemoveBtn() {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-danger';
+            btn.innerHTML = '✖';
+            btn.onclick = function() {
+                this.closest('.row-entry').remove();
+                triggerUpdate();
+            };
+            return btn;
+        }
+
+        function addRowT1(comp='', PC='', desc='') {
+            const div = document.createElement('div');
+            div.className = 'row-entry';
+            div.innerHTML = `
+                <div class="drag-handle">⠿</div>
+                <div class="row-inputs">
+                    <input type="text" placeholder="Componente / Atributo" class="t1-comp sync-input" value="${comp}">
+                    <input type="text" placeholder="Custo em PC" class="t1-PC sync-input" value="${PC}">
+                    <textarea placeholder="Descrição / Função" class="t1-desc sync-input">${desc}</textarea>
+                </div>
+            `;
+            div.aPCendChild(createRemoveBtn());
+            addDragEvents(div);
+            document.getElementById('t1-container').aPCendChild(div);
+            triggerUpdate();
+        }
+
+        function addRowT2(cat='', efeito='', PC='', desc='') {
+            const div = document.createElement('div');
+            div.className = 'row-entry';
+            div.innerHTML = `
+                <div class="drag-handle">⠿</div>
+                <div class="row-inputs">
+                    <input type="text" placeholder="Categoria (ex: I. Restrição de Movimento)" class="t2-cat sync-input" value="${cat}">
+                    <input type="text" placeholder="Nome do Efeito" class="t2-efeito sync-input" value="${efeito}">
+                    <input type="text" placeholder="Custo PC" class="t2-PC sync-input" value="${PC}">
+                    <textarea placeholder="Mecânica & Cura" class="t2-desc sync-input">${desc}</textarea>
+                </div>
+            `;
+            div.aPCendChild(createRemoveBtn());
+            addDragEvents(div);
+            document.getElementById('t2-container').aPCendChild(div);
+            triggerUpdate();
+        }
+
+        function addRowT3(grau='', PC='', hp='', dur='', efeito='', rct='') {
+            const div = document.createElement('div');
+            div.className = 'row-entry';
+            div.innerHTML = `
+                <div class="drag-handle">⠿</div>
+                <div class="row-inputs">
+                    <input type="text" placeholder="Grau (ex: Grau 4)" class="t3-grau sync-input" value="${grau}">
+                    <input type="text" placeholder="Custo PC" class="t3-PC sync-input" value="${PC}">
+                    <input type="text" placeholder="Dano (HP)" class="t3-hp sync-input" value="${hp}">
+                    <input type="text" placeholder="Duração" class="t3-dur sync-input" value="${dur}">
+                    <input type="text" placeholder="Custo Cura (RCT)" class="t3-rct sync-input" value="${rct}">
+                    <textarea placeholder="Efeito Base & Mitridatismo" class="t3-efeito sync-input">${efeito}</textarea>
+                </div>
+            `;
+            div.aPCendChild(createRemoveBtn());
+            addDragEvents(div);
+            document.getElementById('t3-container').aPCendChild(div);
+            triggerUpdate();
+        }
+
+        function addRowT4(obra='', req='', custo='', desc='') {
+            const div = document.createElement('div');
+            div.className = 'row-entry';
+            div.innerHTML = `
+                <div class="drag-handle">⠿</div>
+                <div class="row-inputs">
+                    <input type="text" placeholder="Obra Específica" class="t4-obra sync-input" value="${obra}">
+                    <input type="text" placeholder="Custos (¥ / Posts)" class="t4-custo sync-input" value="${custo}">
+                    <textarea placeholder="Requisitos Especiais" class="t4-req sync-input">${req}</textarea>
+                    <textarea placeholder="Descrição & Riscos" class="t4-desc sync-input">${desc}</textarea>
+                </div>
+            `;
+            div.aPCendChild(createRemoveBtn());
+            addDragEvents(div);
+            document.getElementById('t4-container').aPCendChild(div);
+            triggerUpdate();
+        }
+
+        // --- 4. ENGINE DE RENDERIZAÇÃO E HTML ---
+        function renderHTML(data) {
+            // Tabela 1: Base e Atributos
+            let t1Html = '';
+            data.t1.forEach(r => {
+                if(r.comp || r.PC || r.desc) {
+                    const isBase = r.comp.toLowerCase().startsWith('base');
+                    const compStyle = isBase ? 'font-weight: bold; color: var(--combat-accent, #d4af37);' : 'font-weight: bold;';
+                    t1Html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 10px; ${compStyle}">${r.comp}</td><td style="padding: 10px;">${r.PC}</td><td style="padding: 10px;">${r.desc}</td></tr>`;
+                }
+            });
+
+            // Tabela 2: Módulos de Efeito (Com Agrupamento de Categorias)
+            let t2Html = '';
+            let currentCat = '';
+            data.t2.forEach(r => {
+                if(r.efeito || r.PC || r.desc) {
+                    if (r.cat && r.cat !== currentCat) {
+                        currentCat = r.cat;
+                        t2Html += `<tr style="background: rgba(212,175,55,0.1);"><td colspan="3" style="padding: 5px 10px; font-weight: bold; text-align: center; color: var(--gold-main);">${currentCat}</td></tr>`;
+                    }
+                    t2Html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 8px; font-weight: bold;">${r.efeito}</td><td style="padding: 8px;">${r.PC}</td><td style="padding: 8px;">${r.desc}</td></tr>`;
+                }
+            });
+
+            // Tabela 3: Toxicologia
+            let t3Html = '';
+            const colorMap = { 'Grau 4': '#888', 'Grau 3': '#4caf50', 'Grau 2': '#2196f3', 'Grau 1': '#9c27b0', 'Semi-Esp.': '#ff9800', 'Especial': '#f44336' };
+            data.t3.forEach(r => {
+                if(r.grau || r.PC || r.hp) {
+                    const color = colorMap[r.grau] || '#d4af37';
+                    t3Html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 8px; font-weight: bold; color: ${color};">${r.grau}</td><td style="padding: 8px;">${r.PC}</td><td style="padding: 8px;">${r.hp}</td><td style="padding: 8px;">${r.dur}</td><td style="padding: 8px;">${r.efeito}</td><td style="padding: 8px;">${r.rct}</td></tr>`;
+                }
+            });
+
+            // Tabela 4: Criações Fixas Especial
+            let t4Html = '';
+            data.t4.forEach(r => {
+                if(r.obra || r.req || r.custo) {
+                    t4Html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 10px; font-weight: bold; color: var(--combat-accent, #d4af37);">${r.obra}</td><td style="padding: 10px;">${r.req}</td><td style="padding: 10px;">${r.custo}</td><td style="padding: 10px;">${r.desc}</td></tr>`;
+                }
+            });
+
+            const baseHtml = `
+            <div class="rpg-card">
+                <div class="banner-container"><div class="lore-banner banner-static" style="background-image: url('${data.bgImg}');"></div></div>
+                <div class="main-content">
+                    <div class="header">
+                        <div class="icon-deco" data-kanji="${data.kanji}"></div>
+                        <div><div class="title"><span class="g">${data.titulo}</span><span class="tag">${data.tags}</span></div><div class="subtitle-line">${data.subtitulo}</div></div>
+                    </div>
+                    
+                    <div class="section" style="margin-top: 20px;">
+                        <div class="h"><div class="name">Definição & Engenharia Amaldiçoada</div></div>
+                        <p class="lead">${data.definicao}</p>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="h"><div class="name">Detalhes da Função</div></div>
+                        <div class="details-grid">
+                            <div class="detail-card"><div class="card-title">Requisitos</div><div class="card-content">${data.requisitos}</div></div>
+                            <div class="detail-card"><div class="card-title">Financiamento</div><div class="card-content">${data.financiamento}</div></div>
+                            <div class="detail-card" style="grid-column: 1 / -1;"><div class="card-title">Estatuto Legal</div><div class="card-content">${data.estatuto}</div></div>
+                        </div>
+                    </div>
+                    
+                    ${t1Html ? `
+                    <div class="section">
+                        <div class="h"><div class="name">Etapa 1: Base e Atributos Numéricos</div></div>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; background: rgba(0,0,0,0.2);"> 
+                            <thead><tr style="border-bottom: 2px solid var(--combat-border, #444); text-align: left;"><th style="padding: 10px;">Componente</th><th style="padding: 10px;">Custo em PC</th><th style="padding: 10px;">Descrição</th></tr></thead> 
+                            <tbody>${t1Html}</tbody>
+                        </table>
+                    </div>` : ''}
+                    
+                    ${t2Html ? `
+                    <div class="section">
+                        <div class="h"><div class="name">Etapa 2: Módulos de Efeito (Comprados com PC)</div></div>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: rgba(0,0,0,0.2);"> 
+                            <thead><tr style="border-bottom: 2px solid var(--combat-border, #444); text-align: left;"><th style="padding: 10px;">Efeito (Categoria)</th><th style="padding: 10px;">Custo PC</th><th style="padding: 10px;">Mecânica & Cura</th></tr></thead> 
+                            <tbody>${t2Html}</tbody>
+                        </table>
+                    </div>` : ''}
+
+                    ${t3Html ? `
+                    <div class="section">
+                        <div class="h"><div class="name">Módulo de Toxicologia (Venenos Químicos e Amaldiçoados)</div></div>
+                        <p style="font-size: 13px; margin-bottom: 10px;">A resistência do alvo depende exclusivamente de <i>Aptidão: Mitridatismo</i> (-25 Dano por Nível) e do uso de RCT.</p>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px; background: rgba(0,0,0,0.2);"> 
+                            <thead><tr style="border-bottom: 2px solid var(--combat-border, #444); text-align: left;"><th style="padding: 10px;">Grau</th><th style="padding: 10px;">Custo PC</th><th style="padding: 10px;">Dano (HP)</th><th style="padding: 10px;">Duração</th><th style="padding: 10px;">Efeito Base & Mitridatismo</th><th style="padding: 10px;">Custo Cura (RCT)</th></tr></thead> 
+                            <tbody>${t3Html}</tbody>
+                        </table>
+                    </div>` : ''}
+
+                    ${t4Html ? `
+                    <div class="section">
+                        <div class="h"><div class="name">Criações Fixas de Nível Especial</div></div>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; background: rgba(0,0,0,0.2);"> 
+                            <thead><tr style="border-bottom: 2px solid var(--combat-border, #444); text-align: left;"><th style="padding: 10px;">Obra Específica</th><th style="padding: 10px;">Requisitos Especiais</th><th style="padding: 10px;">Custos (¥ / Posts)</th><th style="padding: 10px;">Descrição & Riscos</th></tr></thead> 
+                            <tbody>${t4Html}</tbody>
+                        </table>
+                    </div>` : ''}
+                </div>
+            </div>`;
+
+            const targetDiv = iframe.contentWindow.document.getElementById('render-target');
+            if(targetDiv) targetDiv.innerHTML = baseHtml;
+
+            const exportHtml = `<link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/profissoes.css?v=4" rel="stylesheet" type="text/css"> ` + baseHtml;
+            document.getElementById('output-box').value = exportHtml.replace(/\n/g, '').replace(/\s{2,}/g, ' ').trim();
+        }
+
+        // --- 5. LOCAL STORAGE & INICIALIZAÇÃO ---
+        function saveToLocalStorage(data) {
+            localStorage.setItem('jujutsuBuilderData_v2', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('jujutsuBuilderData_v2');
+            if(saved) {
+                try {
+                    populateForm(JSON.parse(saved));
+                } catch(e) { populateForm(defaultData); }
+            } else {
+                populateForm(defaultData);
+            }
+        }
+
+        function populateForm(data) {
+            document.getElementById('bgImg').value = data.bgImg || '';
+            document.getElementById('titulo').value = data.titulo || '';
+            document.getElementById('kanji').value = data.kanji || '';
+            document.getElementById('subtitulo').value = data.subtitulo || '';
+            document.getElementById('tags').value = data.tags || '';
+            document.getElementById('definicao').value = data.definicao || '';
+            document.getElementById('requisitos').value = data.requisitos || '';
+            document.getElementById('financiamento').value = data.financiamento || '';
+            document.getElementById('estatuto').value = data.estatuto || '';
+            
+            document.getElementById('t1-container').innerHTML = '';
+            document.getElementById('t2-container').innerHTML = '';
+            document.getElementById('t3-container').innerHTML = '';
+            document.getElementById('t4-container').innerHTML = '';
+
+            if(data.t1) data.t1.forEach(r => addRowT1(r.comp, r.PC, r.desc));
+            if(data.t2) data.t2.forEach(r => addRowT2(r.cat, r.efeito, r.PC, r.desc));
+            if(data.t3) data.t3.forEach(r => addRowT3(r.grau, r.PC, r.hp, r.dur, r.efeito, r.rct));
+            if(data.t4) data.t4.forEach(r => addRowT4(r.obra, r.req, r.custo, r.desc));
+
+            triggerUpdate();
+        }
+
+        function clearAllData() {
+            if(confirm("Tem certeza que deseja resetar para os valores padrão?")) {
+                localStorage.removeItem('jujutsuBuilderData_v2');
+                populateForm(defaultData);
+            }
+        }
+
+        // --- 6. UTILITIES ---
+        function insertTag(id, tagOpen, tagClose) {
+            const el = document.getElementById(id);
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            const text = el.value;
+            const selectedText = text.substring(start, end);
+            
+            el.value = text.substring(0, start) + tagOpen + selectedText + tagClose + text.substring(end);
+            el.focus();
+            triggerUpdate();
+        }
+
+        function copyCode() {
+            const outputText = document.getElementById('output-box').value;
+            if (!outputText) return alert("Não há código para copiar.");
+
+            navigator.clipboard.writeText(outputText).then(() => {
+                const btn = document.querySelector('.export-actions button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "✅ Copiado com sucesso!";
+                setTimeout(() => btn.innerHTML = originalText, 2000);
+            }).catch(() => alert("Erro ao copiar código."));
+        }
+
+        function showSaveStatus() {
+            const status = document.getElementById('save-status');
+            status.classList.add('show');
+            setTimeout(() => status.classList.remove('show'), 2000);
+        }
+
+        // --- 7. IMPORTAÇÃO ---
+        function importCode() {
+            const rawCode = document.getElementById('import-box').value;
+            if (!rawCode) return alert("Cole o HTML na caixa ao lado.");
+
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(rawCode, 'text/html');
+                const data = { t1: [], t2: [], t3: [], t4: [] };
+
+                const banner = doc.querySelector('.lore-banner');
+                if (banner && banner.style.backgroundImage) data.bgImg = banner.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+
+                const titleEl = doc.querySelector('.title .g'); if (titleEl) data.titulo = titleEl.innerText;
+                const kanjiEl = doc.querySelector('.icon-deco'); if (kanjiEl) data.kanji = kanjiEl.getAttribute('data-kanji');
+                const subEl = doc.querySelector('.subtitle-line'); if (subEl) data.subtitulo = subEl.innerText;
+                const tagEl = doc.querySelector('.title .tag'); if (tagEl) data.tags = tagEl.innerText;
+
+                const leadEl = doc.querySelector('.lead');
+                if(leadEl) data.definicao = leadEl.innerHTML;
+
+                const cards = doc.querySelectorAll('.detail-card .card-content');
+                if (cards.length >= 3) {
+                    data.requisitos = cards[0].innerHTML;
+                    data.financiamento = cards[1].innerHTML;
+                    data.estatuto = cards[2].innerHTML;
+                }
+
+                const tables = doc.querySelectorAll('table tbody');
+                if (tables.length > 0) {
+                    tables[0].querySelectorAll('tr').forEach(tr => {
+                        const tds = tr.querySelectorAll('td');
+                        if (tds.length >= 3) data.t1.push({ comp: tds[0].innerText, PC: tds[1].innerText, desc: tds[2].innerText });
+                    });
+                }
+                if (tables.length > 1) {
+                    let lastCat = '';
+                    tables[1].querySelectorAll('tr').forEach(tr => {
+                        const tds = tr.querySelectorAll('td');
+                        if (tds.length === 1) {
+                            lastCat = tds[0].innerText;
+                        } else if (tds.length >= 3) {
+                            data.t2.push({ cat: lastCat, efeito: tds[0].innerText, PC: tds[1].innerText, desc: tds[2].innerText });
+                        }
+                    });
+                }
+                if (tables.length > 2) {
+                    tables[2].querySelectorAll('tr').forEach(tr => {
+                        const tds = tr.querySelectorAll('td');
+                        if (tds.length >= 6) data.t3.push({ grau: tds[0].innerText, PC: tds[1].innerText, hp: tds[2].innerText, dur: tds[3].innerText, efeito: tds[4].innerText, rct: tds[5].innerText });
+                    });
+                }
+                if (tables.length > 3) {
+                    tables[3].querySelectorAll('tr').forEach(tr => {
+                        const tds = tr.querySelectorAll('td');
+                        if (tds.length >= 4) data.t4.push({ obra: tds[0].innerText, req: tds[1].innerText, custo: tds[2].innerText, desc: tds[3].innerText });
+                    });
+                }
+
+                populateForm(data);
+                document.getElementById('import-box').value = '';
+                alert("Importação realizada com sucesso!");
+            } catch (err) {
+                alert("Erro ao analisar o código HTML colado.");
+            }
+        }
+
+        window.onload = () => {
+            initIframe();
+            setTimeout(loadFromLocalStorage, 200);
+        };
+    </script>
+</body>
+</html>
